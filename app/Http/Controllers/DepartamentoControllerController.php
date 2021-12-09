@@ -115,6 +115,7 @@ class DepartamentoControllerController extends Controller
         $data = [];
         
         $departamentoController = departamentoController::find($id);
+        
         $data['departamentos'] = $departamentoController;
          $data['empleados'] = empleadosController::all();
         return view('departamentos.edit', $data);

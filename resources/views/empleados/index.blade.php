@@ -81,8 +81,8 @@
                                             <th  class="border-top-0">EMAIL</th>
                                              <th  class="border-top-0">TELÉFONO</th>
                                               <th  class="border-top-0">FECHA_CONTRATO</th>
-                                               <th  class="border-top-0">ID_PUESTO</th>
-                                                <th  class="border-top-0">ID_DEPARTAMENTO</th>
+                                               <th  class="border-top-0">NOMBRE_DEPARTAMENTO</th>
+                                                <th  class="border-top-0">NOMBRE_PUESTO</th>
                                                 <th  class="border-top-0"></th>
                                                 <th  class="border-top-0"></th>
                                                 <th  class="border-top-0"></th>
@@ -111,10 +111,10 @@
                                             <td >{{  $empleado->fecha_contrato }}</td>
                                             
                                             
-                                            <td >{{  $empleado->id_puesto }}</td>
+                                            <td >{{  $empleado->departamento->nombre }}</td>
                                             
                                             
-                                            <td >{{  $empleado->id_departamento }}</td>
+                                            <td >{{  $empleado->puesto->nombre }}</td>
                                                 
                                             <td>
                                                 <form action="{{url('empleados/ ' . $empleado->id)}} " method="get">

@@ -43,13 +43,21 @@
                                         <label for="example-email" class="col-md-12 p-0">Seleccione el jefe del departamento:</label>
                                         <div class="col-md-12 border-bottom p-0">
                                            
-                                            <select name="id_empleado_jefe" placeholder="Jefe"
+                                            <select value="" name="id_empleado_jefe" placeholder="Jefe"
                                                 class="form-control p-0 border-0"
                                                 id="example-email"> 
-                                                    <option value="null" selected>No asignar jefe</option>
-                                              @foreach($empleados as $empleadosController)
-                                                      <option style="color:gray;" value="{{ $empleadosController->id }}">{{ $empleadosController->nombre }}</option>
-                                              @endforeach
+                                                <option value="null" selected>No asignar jefe</option>
+                                                 @foreach($empleados as $empleadosController)
+                                                
+                                                      <option @if($empleadosController->id == $departamentos->id_empleado_jefe) selected @endif value="{{ $empleadosController->id }}">{{$empleadosController->nombre}}</option>
+                                                         <!--@if( old('id_empleado_jefe') == $empleadosController->id)-->
+                                                         <!--       <option selected value="{{$empleadosController->id}}">{{$empleadosController->nombre}}</option>-->
+                                                         <!-- @else-->
+                                                         <!--       <option value="{{$empleadosController->id}}">{{$empleadosController->nombre}}</option>-->
+                                                         <!-- @endif-->
+
+                                                      <!--<option style="color:gray;" value="{{ $empleadosController->id }}">{{ $empleadosController->nombre }}</option>-->
+                                                  @endforeach
                                                 </select>
                                            
                                         </div>

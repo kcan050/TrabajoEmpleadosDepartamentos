@@ -66,7 +66,7 @@
                                         <select name="id_puesto" class="col-md-12 border-bottom p-0">
                                             <option style="background-color:gray;" selected disabled value="">&nbsp;</option>
                                                 @foreach ($puesto as $puestoController)
-                                                    <option style="background-color:gray;" value="{{ $puestoController->id }}">{{ $puestoController->nombre }}</option>
+                                                    <option style="background-color:gray;" @if($puestoController->id == $empleados->id_puesto) selected @endif value="{{ $puestoController->id }}">{{ $puestoController->nombre }}</option>
                                                 @endforeach
                                         </select>
                                     </div>
@@ -75,7 +75,7 @@
                                         <select name="id_departamento" class="col-md-12 border-bottom p-0">
                                             <option style="background-color:gray;" selected disabled value="">&nbsp;</option>
                                                 @foreach ($departamento as $departamentoController)
-                                                    <option style="background-color:gray;" value="{{ $departamentoController->id }}">{{ $departamentoController->nombre }}</option>
+                                                    <option style="background-color:gray;" @if($departamentoController->id == $empleados->id_departamento) selected @endif value="{{ $departamentoController->id }}">{{ $departamentoController->nombre }}</option>
                                                 @endforeach
                                         </select>
                                     </div>

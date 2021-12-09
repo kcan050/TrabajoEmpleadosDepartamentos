@@ -17,11 +17,13 @@ class departamentoController extends Model
     
        
     
-    public function empleados () {
-        return $this->hasMany ('App\Models\empleadosController', 'id_empleado_jefe');
+    public function empleados() {
+        return $this->hasMany ('App\Models\empleadosController', 'id_departamento');
+    }
+     public function jefe(){
+        return $this->belongsTo ('App\Models\empleadosController', 'id_empleado_jefe');
     }
     
-    
-    
+    //cuando tengo una dependendencia tengo dos relaciones
     
 }

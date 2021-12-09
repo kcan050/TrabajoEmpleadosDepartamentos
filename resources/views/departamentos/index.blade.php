@@ -77,7 +77,7 @@
                                             <th  class="border-top-0">ID</th>
                                             <th  class="border-top-0">NOMBRE</th>
                                             <th class="border-top-0">LOCALIZACION</th>
-                                            <th  class="border-top-0">ID_JEFE_DEPARTAMENTO</th>
+                                            <th  class="border-top-0">NOMBRE_JEFE_DEPARTAMENTO</th>
                                             <th class="border-top-0"></th>
                                             <th  class="border-top-0"></th>
                                             <th class="border-top-0"></th>
@@ -101,7 +101,7 @@
                                                    
                                                    <td >NO ASIGNADO</td>
                                             @else
-                                                   <td >{{ $departamento->id_empleado_jefe }}</td>
+                                                   <td >{{ $departamento->jefe->nombre }}</td>
                                             
                                              @endif
                                             <td>

@@ -21,4 +21,10 @@ class empleadosController extends Model
         return $this->belongsTo('App\Models\puestoController', 'id_puesto');
     }
     
+      public function departamentos() {
+        return $this->hasMany('App\Models\departamentoController', 'id_empleado_jefe');
+    }
+    
+    
+    
 }
