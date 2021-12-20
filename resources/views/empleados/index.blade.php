@@ -9,14 +9,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Confirm delete</h5>
+        <h5 class="modal-title">Confirmar borrado</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Confirm delete <span class="nombre" >XXX</span>?</p>
+        <p>Desea borrar <span class="nombre" >XXX</span>?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <form id="form" action="" method="post">
             @method('delete')
             @csrf
@@ -27,7 +27,72 @@
   </div>
 </div>
 
-
+<div class="modal" id="modalUpload" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Upload</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Eliga la foto que desea subir</p>
+        <p>
+        
+             <div class="form-group form-file-upload form-file-multiple">
+                                         
+                                           
+                    <div class="input-group">
+                                                
+                         <span class="input-group-btn">
+                                                          
+                                                            
+                                                            
+                            <button  type="button" class="btn btn-fab btn-round btn-primary" style="">
+                                   <input type="file" accept="image/png , image/jpeg" form="uploadForm" enctype="multipart/form-data" name="mime_type" id="upload-photo"/>
+                                                       
+                                <label for="upload-photo">Subir foto de perfil <i class="material-icons">attach_file</i></label>
+                             </button>
+                       </span>
+                   </div>
+              </div>
+    
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form id="uploadForm" action="" method="post" enctype="multipart/form-data">
+            @csrf
+           
+            <input type="submit" class="btn btn-primary" value="Subir"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="modal" id="modalUpload" tabindex="-1">-->
+<!--  <div class="modal-dialog">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <h5 class="modal-title">Upload</h5>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <p>Upload photos</p>-->
+<!--        <p>-->
+<!--          <label for="formFile" class="form-label">Performance image:</label>-->
+<!--          <input form="uploadForm" class="form-control" type="file" id="formFile" accept="image/*" name="photo">-->
+<!--        </p>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>-->
+<!--        <form id="uploadForm" action="" method="post" enctype="multipart/form-data">-->
+<!--            @csrf-->
+<!--            <input type="submit" class="btn btn-primary" value="Upload"/>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 <div class="col-xl-6" style="width:100%;">
  <div class="col-md-6 col-6" style="margin-left:315px; cursor:pointer;">
                   <div class="card">
@@ -55,6 +120,15 @@
     </div>
 @endif
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
  <div class="form-group mb-4">
          <div class="col-sm-18" style="text-align:center;">
                 <a type="button" class="btn btn-success" href="{{ url('empleados/create') }}">Agrega un empleado</a>
@@ -75,6 +149,7 @@
                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
+                                            <th  class="border-top-0"></th>
                                             <th  class="border-top-0">ID</th>
                                             <th  class="border-top-0">NOMBRE</th>
                                             <th class="border-top-0">APELLIDOS</th>
@@ -91,6 +166,27 @@
                                     <tbody>
                                        @foreach ($empleados as $empleado)
                                         <tr>
+                                            
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                  <div>
+                                                    
+                                                  </div>
+                                                  <div class="d-flex flex-column justify-content-center">
+                                                      @if( $empleado->rutaImg == null)
+                                                      
+                                                          <img src="{{ url('assets2/img/default.png')}}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                          <h6 class="mb-0 text-sm">{{   $empleado->nombre }} {{$empleado->apellidos}}</h6>
+                                                        <p class="text-xs text-secondary mb-0">{{$empleado->email}}</p>
+                                                      @else
+                                                         <img src="{{ asset('storage/imgEmpleado/'. $empleado->rutaImg) }}" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                        <h6 class="mb-0 text-sm">{{  $empleado->nombre }} {{$empleado->apellidos}}</h6>
+                                                        <p class="text-xs text-secondary mb-0">{{$empleado->email}}</p>
+                                                    
+                                                    @endif
+                                                  </div>
+                                                </div>
+                                            </td>
                                            <td >{{ $empleado->id }}</td>
                                           
                                       
@@ -115,7 +211,13 @@
                                             
                                             
                                             <td >{{  $empleado->puesto->nombre }}</td>
+                                            
+                                            <td>
                                                 
+                                            <input type="button" onclick="uploadElement({{$empleado->id}}, '{{$empleado->nombre}}','upload')" name="btUpload" value="Cargar Foto" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalUpload">
+                                         
+                                                        
+                                            </td>
                                             <td>
                                                 <form action="{{url('empleados/ ' . $empleado->id)}} " method="get">
                                                     @csrf

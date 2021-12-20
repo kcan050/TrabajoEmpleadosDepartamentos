@@ -11,7 +11,7 @@ class empleadosController extends Model
     
     protected $table = 'empleado';
     
-    protected $fillable = [ 'id_puesto', 'id_departamento', 'nombre', 'apellidos', 'email','telefono','fecha_contrato', ];
+    protected $fillable = [ 'id_puesto', 'id_departamento', 'rutaImg','nombre', 'apellidos', 'email','telefono','fecha_contrato', ];
     
     public function departamento() {
         return $this->belongsTo('App\Models\departamentoController', 'id_departamento');
@@ -19,6 +19,10 @@ class empleadosController extends Model
     
     public function puesto() {
         return $this->belongsTo('App\Models\puestoController', 'id_puesto');
+    }
+    
+    public function fotos() {
+        return $this->hasMany('App\Models\ImgEmpleado', 'id_foto');
     }
     
       public function departamentos() {

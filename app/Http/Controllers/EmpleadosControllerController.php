@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\empleadosController;
 use App\Models\puestoController;
 use App\Models\departamentoController;
+use App\Models\ImgEmpleado;
 use Illuminate\Http\Request;
 use \Exception;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +13,7 @@ use App\Http\Requests\EmpleadosCreateRequest;
 use App\Http\Requests\EmpleadosUpdateRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 class EmpleadosControllerController extends Controller
 {
     /**
@@ -87,13 +89,18 @@ class EmpleadosControllerController extends Controller
      */
     public function store(EmpleadosCreateRequest $request)
     {
-       
+      
         $data = [];
         $data['message'] = 'El empleado se ha insertado correctamente.';
         $data['type'] = 'success';
         
         $fechaActual = Carbon::now();
         $fechaActual = $fechaActual->format('Y-m-d');   //le damos el formato que necesitamos para la validacion
+        
+       
+        
+        
+       
         
         if($fechaActual < $request->fecha_contrato){    // y comprobamos que la fecha de contratacion sea antes de la fecha actual
             
@@ -106,6 +113,7 @@ class EmpleadosControllerController extends Controller
         
         try {
             $result = $empleadosController->save();
+             
         } catch(Exception $e) {
             $result = false;
         }
@@ -235,12 +243,115 @@ class EmpleadosControllerController extends Controller
         return redirect('empleados')->with($data);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\empleadosController  $empleadosController
-     * @return \Illuminate\Http\Response
-     */
+  
+  
+   function upload(Request $request ,$id) {
+    
+       $empleadosController = empleadosController::find($id);
+        $input = 'mime_type';
+        $data = [];
+        $data['message'] = 'El empleado ' . $empleadosController->nombre . ' se ha actualizado correctamente.';
+        $data['type'] = 'success';
+        
+       $rules=
+            [
+                "mime_type"=> "required|mimes:jpg,png,jpge|file|max:2000",
+            ];
+        $message=[
+            'mime_type.required'=>'Debes escribir un nombre',
+            'mime_type.mime'=>'No sirve ese formato',
+            'mime_type.max'=>'La imagen es muy pesada',
+            
+            ];
+
+        $validator =Validator::make($request->all(), $rules, $message);
+
+        if($validator->messages()->messages()){
+            return back()
+                ->withInput()
+                ->withErrors($validator->messages());
+        }
+        if(ImgEmpleado::select("*")->where("id_empleado", $id)->exists()){  // esta seccion de codigo es para actualizar la foto de perfil de dicho empleado si ya a subido una foto
+            
+            
+            $imgNombre = ImgEmpleado::select("nombreArchivo")->where("id_empleado", $id)->get();
+               $img = DB::table('imgEmpleado')
+                        ->where('id_empleado', $id)
+                        ->select('nombreArchivo')
+                        ->first();
+                        
+                        
+                        
+               if( Storage::exists('/public/imgEmpleado/' . $img->nombreArchivo)){
+               
+                   Storage::delete('/public/imgEmpleado/' . $img->nombreArchivo);
+                
+               }
+             try{
+                    $archivo = $request->file($input);
+                    $nombre = $archivo->getClientOriginalName();
+                    $data=[];
+                    $data['nombreArchivo']= $this->createId().'.'.$archivo->getClientOriginalExtension();
+                    $data['nombreImagen']= $archivo->getClientOriginalName();
+                    $data['mimeType']= 'image/'.$archivo->getClientOriginalExtension();
+                    DB::update('update imgEmpleado set nombreArchivo = :nombreArchivo , nombreImagen = :nombreImagen , mimeType = :mimeType  where id = :id', ['nombreArchivo' => $data['nombreArchivo'],'nombreImagen' => $data['nombreImagen'],'mimeType' => $data['mimeType'],'id' => $id]);
+                    DB::update('update empleado set rutaImg = :nombreArchivo  where id = :id', ['nombreArchivo' => $data['nombreArchivo'],'id' => $id]);
+                   
+                $archivo->storeAs('public/imgEmpleado', $data['nombreArchivo']);
+                
+                }
+                catch(\Exception $e){
+                   
+                    return back()->with($data);
+                }
+            
+        }else if($request->hasFile($input) && $request->file($input)->isValid()) {
+            $archivo = $request->file($input);
+            $nombre = $archivo->getClientOriginalName();
+       
+           
+          
+                try{
+                    $data=[];//creas un array donde metes los datos
+                    $data['nombreArchivo']= $this->createId().'.'.$archivo->getClientOriginalExtension();//crear nombre unico para la imagen
+                    $data['nombreImagen']= $archivo->getClientOriginalName();
+                    $data['mimeType']= 'image/'.$archivo->getClientOriginalExtension();//cogemos la extension y la concatenamos con la imagen
+                    $data['id_empleado']= $id;
+                    DB::update('update empleado set rutaImg = :nombreArchivo where id = :id', ['nombreArchivo' => $data['nombreArchivo'],'id' => $id]);
+                    $img= new ImgEmpleado( $data);//y se lo pasa al constructor
+                    
+                    $img->save();//guardas la imagen
+                    $archivo->storeAs('public/imgEmpleado', $data['nombreArchivo']);//lo metes en el storage
+                }
+                catch(\Exception $e){
+                    return back()->with($data);
+                }
+
+        }
+        return redirect('empleados')->with($data);
+            
+            
+            //dd([$_FILES, $tipe, mime_content_tyºpe($archivo->getRealPath())]);
+            //lo normal es guardar el archivo con un nombre diferente al original
+            //dd($archivo->move('upload/' . $performance->id, $nombre)); File
+            //dd($archivo->storeAs('public/images/' . $performance->id, $nombre)); path storage
+            //$archivo->storeAs('public/images/' . $performance->id, $nombre);
+        
+         
+        //$imgEmpleado = new ImgEmpleado($request->id,$request->mime_type);
+      
+        
+        
+    }
+    public function createId(){
+        $x = 0;
+        $y = 5;
+        $Strings = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $random =substr(str_shuffle($Strings), $x, $y);
+        $id = uniqid($random,true);
+        return $id;
+    }
+    
     public function destroy($id)
     {  
         

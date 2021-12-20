@@ -18,15 +18,16 @@ class CreateEmpleadosControllersTable extends Migration
             $table->bigInteger('id_puesto')->unsigned();
             //$table->bigInteger('id_departamento')->unsigned();
             $table->date('fecha_contrato')->useCurrent();
-            
+            // $table->bigInteger('id_foto')->nullable();
             $table->string('nombre', 100);
+            $table->string('rutaImg', 100)->nullable();
             $table->string('apellidos', 100);
             $table->string('email', 100)->unique();
             $table->string('telefono', 9)->unique();
             $table->timestamps();
             
             $table->foreign('id_puesto')->references('id')->on('puesto')->onUpdate('cascade')->onDelete('cascade');
-           
+            
             
             //$table->unique('id_departamento');
             
